@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 # Load the datasets
 medal_df = pd.read_csv("Olympics_2024_Medals_Table.csv")
 competition_df = pd.read_csv("Olympics_2024.csv")
+historical_df = pd.read_csv("Olympics_Historical_Data.csv")  # Contains historical data for all countries and athletes
 
 # Streamlit App Layout
 st.title("Olympics 2024 Interactive Medal, Competition, and Historical Analysis")
@@ -116,20 +117,24 @@ elif section == "Competitions Analysis":
                          color_discrete_sequence=['#FFD700', '#C0C0C0', '#CD7F32'])
     st.plotly_chart(fig_country)
 
-# Historical Trends Section
+# Historical Trends Section with Athlete Details
 elif section == "Historical Trends":
-    st.write("## Historical Trends in Medal Wins")
-    # Here you could load a dataset with historical data of Olympic games.
-    historical_df = pd.read_csv("Olympics_Historical_Data.csv")
+    st.write("## Historical Trends in Medal Wins and Athlete Details")
     
-    st.write("### Medal Trends Over the Years")
+    # Select Country and show historical data for each
     selected_country_trend = st.selectbox("Select Country for Historical Trend", historical_df['Country'].unique())
     country_trend_data = historical_df[historical_df['Country'] == selected_country_trend]
 
+    # Show medal trends over time
     fig_trend = px.line(country_trend_data, x='Year', y='Total Medals', 
                         title=f"Medal Wins for {selected_country_trend} Over Time", markers=True,
                         color_discrete_sequence=['#FFD700'])
     st.plotly_chart(fig_trend)
+
+    # Show athletes and their medals
+    st.write(f"### Athletes from {selected_country_trend} with Most Medals")
+    athletes = historical_df[historical_df['Country'] == selected_country_trend][['Athlete', 'Gold', 'Silver', 'Bronze']].drop_duplicates()
+    st.dataframe(athletes)
 
     # Medal Trends by Competition Type
     st.write("## Medal Trends by Competition Type")
@@ -141,29 +146,32 @@ elif section == "Historical Trends":
                              color_discrete_sequence=['#C0C0C0'])
     st.plotly_chart(fig_comp_trend)
 
+    # Show detailed information for all countries
+    st.write("## All Countries Medal Information")
+    all_countries_data = historical_df[['Country', 'Year', 'Gold', 'Silver', 'Bronze']].drop_duplicates()
+    st.dataframe(all_countries_data)
+
+    # India specific details
+    st.write("## India's Detailed Medal and Athlete Information")
+    india_data = historical_df[historical_df['Country'] == 'India']
+    st.dataframe(india_data[['Year', 'Athlete', 'Gold', 'Silver', 'Bronze']])
+
 # Additional Information Section
 elif section == "Additional Information":
-    st.write("## Additional Insights")
-    st.write("### Fun Facts about Olympics 2024:")
-    st.write("""
-        - The 2024 Olympics will be held in Paris, marking 100 years since the city last hosted the Summer Games in 1924.
-        - Over 10,000 athletes from more than 200 countries are expected to compete.
-        - Skateboarding, surfing, and sport climbing are set to return as part of the official program.
-        - The Olympic Village will be built to be entirely sustainable.
-    """)
-
-    # Interesting Data Points
-    st.write("### Interesting Data Points")
-    st.write("#### Highest Number of Gold Medals in a Single Olympics")
-    st.write("Country: USA | Year: 1984 | Total Gold Medals: 83")
+    st.write("## Additional Information and Insights")
+    st.write("### Interesting Facts and Statistics")
+    st.write("1. **Country with the Most Total Medals:**")
+    st.write(medal_df.loc[medal_df['TOTAL'].idxmax()]['TEAM'])
+    st.write("2. **Competition with the Highest Medal Count:**")
+    st.write(competition_df.loc[competition_df['Total'].idxmax()]['Competitions'])
     
-    st.write("#### Athletes with Most Medals in Olympic History")
-    st.write("Michael Phelps (USA) | 23 Gold, 3 Silver, 2 Bronze")
+    # Historical Data Insight
+    st.write("### Historical Insights")
+    st.write("Historical data shows trends in medal distribution and athlete performance. Use this section to explore more detailed information about the evolution of Olympic performances over time.")
 
-    # Provide links to external resources
-    st.write("### Useful Resources")
-    st.markdown("""
-        - [Official Olympics Website](https://www.olympics.com)
-        - [Olympic Medal History](https://en.wikipedia.org/wiki/All-time_Olympic_Games_medal_table)
-        - [Athlete Profiles](https://www.olympic.org/athletes)
-    """)
+    # Contact Information
+    st.write("### Contact Information")
+    st.write("For any inquiries or additional information, feel free to reach out at contact@olympics2024.com")
+
+# End of App
+st.write("Thank you for using the Olympics 2024 Interactive Analysis tool!")
