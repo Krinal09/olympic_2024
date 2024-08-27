@@ -133,7 +133,7 @@ elif section == "Historical Trends":
 
     # Show athletes and their medals
     st.write(f"### Athletes from {selected_country_trend} with Most Medals")
-    athletes = historical_df[historical_df['Country'] == selected_country_trend][['Athlete', 'Gold', 'Silver', 'Bronze']].drop_duplicates()
+    athletes = historical_df[historical_df['Country'] == selected_country_trend][['Gold', 'Silver', 'Bronze']].drop_duplicates()
     st.dataframe(athletes)
 
     # Medal Trends by Competition Type
@@ -152,13 +152,21 @@ elif section == "Historical Trends":
     st.dataframe(all_countries_data)
 
     # India specific details
-    st.write("## India's Detailed Medal and Athlete Information")
-    india_data = historical_df[historical_df['Country'] == 'India']
-    st.dataframe(india_data[['Year', 'Athlete', 'Gold', 'Silver', 'Bronze']])
+    # st.write("## India's Detailed Medal and Athlete Information")
+    # india_data = historical_df[historical_df['Country'] == 'India']
+    # st.dataframe(india_data[['Year', 'Gold', 'Silver', 'Bronze']])
 
 # Additional Information Section
 elif section == "Additional Information":
     st.write("## Additional Information and Insights")
+    st.write("### Fun Facts about Olympics 2024:")
+    st.write("""
+        - The 2024 Olympics will be held in Paris, marking 100 years since the city last hosted the Summer Games in 1924.
+        - Over 10,000 athletes from more than 200 countries are expected to compete.
+        - Skateboarding, surfing, and sport climbing are set to return as part of the official program.
+        - The Olympic Village will be built to be entirely sustainable.
+    """)
+    
     st.write("### Interesting Facts and Statistics")
     st.write("1. **Country with the Most Total Medals:**")
     st.write(medal_df.loc[medal_df['TOTAL'].idxmax()]['TEAM'])
@@ -169,9 +177,13 @@ elif section == "Additional Information":
     st.write("### Historical Insights")
     st.write("Historical data shows trends in medal distribution and athlete performance. Use this section to explore more detailed information about the evolution of Olympic performances over time.")
 
-    # Contact Information
-    st.write("### Contact Information")
-    st.write("For any inquiries or additional information, feel free to reach out at contact@olympics2024.com")
+    # Provide links to external resources
+    st.write("### Useful Resources")
+    st.markdown("""
+        - [Official Olympics Website](https://www.olympics.com)
+        - [Olympic Medal History](https://en.wikipedia.org/wiki/All-time_Olympic_Games_medal_table)
+        - [Athlete Profiles](https://www.olympic.org/athletes)
+    """)
 
 # End of App
 st.write("Thank you for using the Olympics 2024 Interactive Analysis tool!")
